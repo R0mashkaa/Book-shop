@@ -1,6 +1,6 @@
 const service = require('./auth.service');
 const { OAuthService } = require('../../services');
-const { Unauthorized } = require('../../errors/ApiError');
+const { Unauthorized } = require('../../errors/Apierror');
 
 module.exports = {
     validateTokenDynamically: (tokenType) => async (req, res, next) => {

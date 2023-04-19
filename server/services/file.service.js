@@ -27,6 +27,16 @@ async function uploadFileToS3(file, itemId, itemType) {
     return Key;
 }
 
+function getFileFromS3(Key) {
+    return S3.getSignedUrl('getObject', { Key, Bucket: S3_BUCKET, Expires: 5 * 60 });
+}
+function getFileBufferFromS3(Key) {
+    return S3.getObject({ Key, Bucket: S3_BUCKET}).promise();
+}
+// function deleteImageFromS3(Key) {                // TODO IN WORK
+//     return S3.deleteObject({ Key, Bucket: S3_BUCKET }).promise();
+// }
+
 
 function deleteImageFromS3(Key) {
     Key = Key.slice(47);
@@ -42,6 +52,8 @@ function fileNameBuilder(file, itemId, itemType) {
 
 module.exports = {
     uploadFileToS3,
+    getFileFromS3,
+    getFileBufferFromS3,
     deleteImageFromS3,
     fileNameBuilder,
 };

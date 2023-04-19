@@ -1,9 +1,8 @@
 const bookService = require('./book.service');
 const { CREATED, NO_CONTENT } = require('../../errors/error.codes');
 const { fileService } = require('../../services');
-const { BadRequest } = require('../../errors/Apierror');
 
-module.exports = {              
+module.exports = {                  // TODO ADD FIND BY ANY FIELD 
 
     getAllBook: async (req, res, next) => {
         try {
@@ -73,24 +72,6 @@ module.exports = {
             await bookService.updateBook(bookId, { actualAvatarLink: avatarLinkData });
 
             res.json(avatarLinkData);
-        } catch (e) {
-            next(e);
-        }
-    },
-
-    updateBookAvatar: async (req, res, next) => {
-        try {
-            const { avatarId, bookId } = req.params;
-
-            if (!avatarId) {
-                throw new BadRequest('avatar ID not found');
-            }
-
-            const newAvatarLink = await bookService.findAvatarById({ _id: avatarId });
-            
-            await bookService.updateBook( bookId, { actualAvatarLink: newAvatarLink.toString() });
-
-            res.json({ 'newLink': newAvatarLink } );
         } catch (e) {
             next(e);
         }

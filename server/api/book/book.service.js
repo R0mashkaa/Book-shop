@@ -10,7 +10,7 @@ module.exports = {
         return await Book.findById(bookId);
     },
 
-    findBookByParams: (searchObject) => {
+    findBookByParams: (searchObject) => {       // TODO ADD FIND BY ANY FIELDS
         return Book.findOne(searchObject);
     },
   

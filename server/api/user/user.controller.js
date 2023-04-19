@@ -1,7 +1,6 @@
 const userService = require('./user.service');
 const { CREATED, NO_CONTENT } = require('../../errors/error.codes');
 const { fileService } = require('../../services');
-const { BadRequest } = require('../../errors/Apierror');
 
 module.exports = {
     getMyProfile: async (req, res, next) => {
@@ -75,10 +74,9 @@ module.exports = {
     uploadUserAvatar: async (req, res, next) => {
         try {
             const { userId } = req.params;
-            let avatarLinkData = await fileService.uploadFileToS3(req.files.avatar, userId, 'user');
+            let avatarLinkData = await fileService.uploadFileToS3(req.files.avatar, req.params.userId, 'user');
 
             avatarLinkData = 'https://rocket2proj.s3.us-east-1.amazonaws.com/' + avatarLinkData;
-            await userService.addUserAvatar(avatarLinkData, userId);
             await userService.updateUser(userId, { actualAvatarLink: avatarLinkData });
 
             res.json(avatarLinkData);
@@ -86,42 +84,15 @@ module.exports = {
             next(e);
         }
     },
-
-    updateUserAvatar: async (req, res, next) => {
-        try {
-            const { avatarId, userId } = req.params;
-
-            if (!avatarId) {
-                throw new BadRequest('avatar ID not found');
-            }
-
-            const newAvatarLink = await userService.findAvatarById({ _id: avatarId });
-            
-            await userService.updateUser( userId, { actualAvatarLink: newAvatarLink.toString() });
-
-            res.json({ 'newLink': newAvatarLink } );
-        } catch (e) {
-            next(e);
-        }
-    },
     
-    deleteUserAvatar: async (req, res, next) => {
+    deleteUserAvatar: async (req, res, next) => {   // TODO DONT WORK DELETE. Rework delete user avatar. Cant get avatar link from database
         try {
-            const { avatarId, userId } = req.params;
-            const isImageEquals = await userService.isActualAvatarEquals({ _id: avatarId, }, { _id: userId });
-
-            if (isImageEquals) {
-                await userService.updateUser(userId, { actualAvatarLink: '' });
-            }
-
-            await userService.deleteUserAvatar(avatarId);
-
-            const avatars = await userService.getAvatarList({ user: userId });
-
-            res.json(avatars);
+            const { userId } = req.params;            
+            await userService.deleteUserAvatar(userId);
+            await userService.updateUser(userId, { actualAvatarLink: '' });
+            res.status(NO_CONTENT).json('Photo deleted');
         } catch (e) {
             next(e);
         }
     }
-
 };

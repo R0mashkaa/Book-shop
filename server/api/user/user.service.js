@@ -1,5 +1,4 @@
 const User = require('../../dataBase/User');
-const Avatar = require('../../dataBase/userAvatar');
 const { OAuthService, fileService } = require('../../services');
 
 module.exports = {
@@ -30,7 +29,7 @@ module.exports = {
 
 
     getAvatarList: async (userId) => {
-        const data = await Avatar.find(userId).sort({ updatedAt: -1 });
+        const data = await User.find(userId).sort({ updatedAt: -1 });
         return data.map((avatar) => {
             return {
                 'Link to avatar': avatar.avatarLink,
@@ -39,24 +38,20 @@ module.exports = {
             };
         });
     },
-        
-    addUserAvatar: async (linkToAvatar, userId) => {
-        return Avatar.create( {avatarLink: linkToAvatar, user: userId });
-    },
 
     deleteUserAvatar: async(avatarId) => {
-        const deletedItem = await Avatar.findByIdAndDelete(avatarId);
+        const deletedItem = await User.findByIdAndDelete(avatarId);
 
         await fileService.deleteImageFromS3(deletedItem.avatarLink);
     },
 
     findAvatarById: async (avatarId) => {
-        const data = await Avatar.find(avatarId);
+        const data = await User.find(avatarId);
         return data.map( (avatar) => avatar.avatarLink );
     },
 
     isActualAvatarEquals: async (avatarId, userId) => {
-        let imageLink = await Avatar.find(avatarId);
+        let imageLink = await User.find(avatarId);
         imageLink = imageLink.map((avatar) => avatar.avatarLink);
         
         let actualAvatarLink = await User.find(userId);

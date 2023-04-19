@@ -2,7 +2,7 @@ const userService = require('./user.service');
 const User = require('../../dataBase/User');
 const { joiValidatorSchema } = require('./user.validator');
 const { IMAGE_MAX_SIZE,  IMAGE_MIMETYPES } = require('../../configs/file.configs');
-const { NotFound, BadRequest, Conflict } = require('../../errors/ApiError');
+const { NotFound, BadRequest, Conflict } = require('../../errors/Apierror');
 
 
 

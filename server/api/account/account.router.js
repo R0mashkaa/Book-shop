@@ -17,7 +17,7 @@ accountRouter.patch('/password/forgot', authMdlwr.validateActionToken(FORGOT_PAS
 
 accountRouter.post('/refresh', userMdlwr.getUserDynamically('email', 'body'), authMdlwr.validateTokenDynamically('refreshToken'), authController.refreshToken);
 
-accountRouter.patch('/:userId/avatar/:avatarId', authMdlwr.validateTokenDynamically('accessToken'), userController.updateUserAvatar);
+accountRouter.patch('/:userId/avatar/:avatarId', authMdlwr.validateTokenDynamically('accessToken'));
 accountRouter.use('/:userId', authMdlwr.validateTokenDynamically('accessToken'), userMdlwr.getUserDynamically('userId','params','_id'));
 accountRouter.get('/:userId/avatar', userController.showAllUserAvatars);
 accountRouter.post('/:userId/avatar', userMdlwr.checkUserAvatar, userController.uploadUserAvatar);

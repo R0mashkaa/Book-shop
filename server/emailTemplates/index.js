@@ -16,3 +16,6 @@ module.exports = {
         subject: 'Your account was banned'
     }
 };
+
+
+// TODO refactor emails
