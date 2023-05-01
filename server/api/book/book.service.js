@@ -10,6 +10,27 @@ module.exports = {
         return await Book.findById(bookId);
     },
 
+    getBookByParams : async (req, res) => {
+        try {
+          const getInfo = await Book.find(
+       
+            {
+            $or: [
+              {
+                bookName: { $regex: req.params.keyword },
+              },
+              {
+                author: { $regex: req.params.keyword},
+              }
+            ],
+          }
+          );
+          res.send(getInfo);
+        } catch (e) {
+          console.log(e);
+        }
+      },
+
     findBookByParams: (searchObject) => {       // TODO ADD FIND BY ANY FIELDS
         return Book.findOne(searchObject);
     },
