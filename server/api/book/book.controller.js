@@ -2,7 +2,7 @@ const bookService = require('./book.service');
 const { CREATED, NO_CONTENT } = require('../../errors/error.codes');
 const { fileService } = require('../../services');
 
-module.exports = {                  // TODO ADD FIND BY ANY FIELD 
+module.exports = { 
 
     getAllBook: async (req, res, next) => {
         try {
@@ -22,7 +22,6 @@ module.exports = {                  // TODO ADD FIND BY ANY FIELD
         }
     },
   
-
     createBook: async (req, res, next) => {
         try {
             const createdBook = await bookService.createBook(req.body);

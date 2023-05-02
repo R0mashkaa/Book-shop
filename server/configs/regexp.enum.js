@@ -5,6 +5,5 @@ module.exports = {
 
     FULLNAME_REGEXP: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
 
-    BOOKNAME_REGEXP: /^[A-Za-zа-яА-Я0-9\s\-_,\\.:;()''""]+$/,
     AUTHOR_REGEXP: /^[a-zA-Zа-щьюяґєіїА-ЩЬЮЯҐЄІЇа-щьюяґєії ]+$/
 };

@@ -15,7 +15,7 @@ module.exports = {
             if (!user) {
                 throw new NotFound('User not found');
             }
-	
+            
             req.locals = { ...req.locals, user };
 	
             next();

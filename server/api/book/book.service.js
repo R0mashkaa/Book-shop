@@ -12,29 +12,28 @@ module.exports = {
 
     getBookByParams : async (req, res) => {
         try {
-          const getInfo = await Book.find(
-       
-            {
-            $or: [
-              {
-                bookName: { $regex: req.params.keyword },
-              },
-              {
-                author: { $regex: req.params.keyword},
-              }
-            ],
-          }
-          );
-          res.send(getInfo);
+            const keyword = req.params.keyword;
+            const getInfo = await Book.find(
+                {
+                    $or: [
+                        {
+                            bookName: { $regex: keyword },
+                        },
+                        {
+                            author: { $regex: keyword},
+                        },
+                        {
+                            releaseDate: { $regex: keyword }
+                        }
+                    ],
+                }
+            );
+            res.send(getInfo);
         } catch (e) {
-          console.log(e);
+            console.log(e);
         }
-      },
-
-    findBookByParams: (searchObject) => {       // TODO ADD FIND BY ANY FIELDS
-        return Book.findOne(searchObject);
     },
-  
+
     createBook: async (userObject) => {
         return Book.create(userObject);
     },

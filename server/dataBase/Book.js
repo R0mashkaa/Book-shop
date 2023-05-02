@@ -4,7 +4,7 @@ const BookScheme = new mongoose.Schema({
 
     bookName: { type: String, trim: true, required:true },
     author: { type: String, trim: true, required: true },
-    releaseDate: { type: Number, trim: true, required: true },
+    releaseDate: { type: String, trim: true, required: true },
     actualAvatarLink: { type: String, default: '' },
 },
 {

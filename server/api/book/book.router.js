@@ -1,7 +1,7 @@
 const bookRouter = require('express').Router();
 
 const controller = require('./book.controller');
-const service=require("./book.service")
+const service = require('./book.service');
 const bookMdlwr = require('./book.middleware');
 
 
