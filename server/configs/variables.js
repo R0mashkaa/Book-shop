@@ -1,5 +1,5 @@
 module.exports = {
-    PORT: process.env.PORT || 5000,
+    PORT: process.env.PORT || 3001,
     FRONTEND_URL: process.env.FRONTEND_URL,
     CONFIRMACCOUNT_URL:process.env.CONFIRMACCOUNTURL,
     MONGO_URL: process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/bookShop',

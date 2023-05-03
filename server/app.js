@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const fileUpload = require('express-fileupload');
@@ -15,12 +16,20 @@ const app = express();
 mongoose.set('debug', true);
 mongoose.set('strictQuery', true);
 mongoose.connect(MONGO_URL)
-    .then(()=> {console.log('Connected to: ', MONGO_URL);})
-    .catch((e)=> {console.log(e);});
+    .then(() => { console.log('Connected to: ', MONGO_URL); })
+    .catch((e) => { console.log(e); });
 
 
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,            //access-control-allow-credentials:true
+    optionSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+// app.use(cors({origin: '*'}));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
+
 
 app.use(fileUpload({
     limits: { fileSize: 200 * 1024 * 1024 },

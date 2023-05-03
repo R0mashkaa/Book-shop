@@ -29,6 +29,7 @@ module.exports = {
             const { error } = joiValidatorSchema.validate(req.body);
 	
             if(error){
+                console.log(error);
                 throw new BadRequest(error);
             }
 
