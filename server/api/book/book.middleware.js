@@ -3,6 +3,7 @@ const Book = require('../../dataBase/Book');
 const { joiValidatorSchema } = require('./book.validator');
 const { IMAGE_MAX_SIZE,  IMAGE_MIMETYPES } = require('../../configs/file.configs');
 const { NotFound, BadRequest, Conflict } = require('../../errors/Apierror');
+// const rolesEnum = require('../../configs/roles.enum');
 
 
 
@@ -29,7 +30,6 @@ module.exports = {
             const { error } = joiValidatorSchema.validate(req.body);
 	
             if(error){
-                console.log(error);
                 throw new BadRequest(error);
             }
 
@@ -51,6 +51,20 @@ module.exports = {
             next(e);
         }
     },
+
+    // isUserRole: (requiredRoles)  => async (req, res, next) => { // TODO permission requets
+    //     try {
+    //         console.log("=============================");
+    //         console.log(Object.values(rolesEnum));
+    //         console.log("=============================");
+    //         if (rolesEnum != requiredRoles) {
+    //             throw new Conflict('Not enough permission');
+    //         }
+    //         next();
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // },
 
     checkBookAvatar: (req, res, next) => {
         try {

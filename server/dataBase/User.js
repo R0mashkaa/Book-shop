@@ -14,6 +14,10 @@ const UserScheme = new mongoose.Schema({
     accountStatus: { type: String, default: 'Pending' },
     role: { type: String, enum: Object.values(rolesEnum), default: rolesEnum.USER },
     actualAvatarLink: { type: String, default: '' },
+    reservedBook: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Books'
+    }
 },
 {
     timestamps: true,

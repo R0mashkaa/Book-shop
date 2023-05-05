@@ -54,44 +54,6 @@ module.exports = {
         }
     },
 
-    sendForgotPasswordEmail: async (req, res, next) => {
-        try {
-            const user = req.locals.user;
-            const forgotPasswordToken = OAuthService.generateActionToken(
-                forgotPasswordAction,
-                { email: user.email }
-            );
-            
-            await authService.createActionToken({
-                actionType: forgotPasswordAction,
-                tokenData: forgotPasswordToken,
-                user: req.locals.user._id
-            });
-
-            const forgotPassURL = `${FRONTEND_URL}/password/forgot?token=${forgotPasswordToken}`;
-
-            await emailService.sendMail(user.email, FORGOT_PASSWORD, { forgotPassURL } );
-
-            res.json('Email sent'); 
-        } catch (e) {
-            next(e);
-        }
-    },
-
-    setForgotPassword: async (req, res, next) => {
-        try {
-            const { _id: userId } = req.user;
-
-            const hashPassword = await OAuthService.hashPassword(req.body.password);
-            await userService.updateUser(userId, { password: hashPassword });
-            await authService.deleteManyByParams({ user: userId });
-            
-            res.json('Password changed. Logouted from all devices'); 
-        } catch (e) {
-            next(e);
-        }
-    },
-
     sendConfirmAccount: async (req, res, next) => {
         try {
             const user = req.locals.user;
@@ -127,6 +89,44 @@ module.exports = {
             await userService.updateUser(userId, { accountStatus: 'Active' });
             
             res.json('Account confirmed'); 
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    sendForgotPasswordEmail: async (req, res, next) => {
+        try {
+            const user = req.locals.user;
+            const forgotPasswordToken = OAuthService.generateActionToken(
+                forgotPasswordAction,
+                { email: user.email }
+            );
+            
+            await authService.createActionToken({
+                actionType: forgotPasswordAction,
+                tokenData: forgotPasswordToken,
+                user: req.locals.user._id
+            });
+
+            const forgotPassURL = `${FRONTEND_URL}/password/forgot?token=${forgotPasswordToken}`;
+
+            await emailService.sendMail(user.email, FORGOT_PASSWORD, { forgotPassURL } );
+
+            res.json('Email sent'); 
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    setForgotPassword: async (req, res, next) => {
+        try {
+            const { _id: userId } = req.user;
+
+            const hashPassword = await OAuthService.hashPassword(req.body.password);
+            await userService.updateUser(userId, { password: hashPassword });
+            await authService.deleteManyByParams({ user: userId });
+            
+            res.json('Password changed. Logouted from all devices'); 
         } catch (e) {
             next(e);
         }
