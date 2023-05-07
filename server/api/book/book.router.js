@@ -9,9 +9,10 @@ bookRouter.get('/', controller.getAllBook);
 bookRouter.post('/', bookMdlwr.createValidator,  bookMdlwr.isInfoRepeats, controller.createBook);
 bookRouter.get('/:keyword', service.getBookByParams);
 
-bookRouter.use('/:bookId', bookMdlwr.getUserDynamically('bookId','params','_id'));
+// bookRouter.use('/:bookId', bookMdlwr.getUserDynamically('bookId','params','_id'));
 bookRouter.get('/:bookId', controller.getBookById);
 bookRouter.put('/:bookId',  bookMdlwr.createValidator, controller.updateBook);
+
 bookRouter.delete('/:bookId', controller.deleteBook);
 
 

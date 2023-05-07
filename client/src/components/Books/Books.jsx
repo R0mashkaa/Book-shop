@@ -11,11 +11,6 @@ function Books() {
 
   const [book, setBook] = useState([]);
   const [newBook, setNewBook] = useState("");
-  // const [newBookName, setNewBookName] = useState([]);
-  // const [newBookAuthor, setNewBookAuthor] = useState([]);
-  // const [newBookYear, setNewBookYear] = useState([]);
-
-
 
 
   useEffect(() => {
@@ -56,10 +51,17 @@ function Books() {
     setNewBook("");
   }
 
+  const deleteBook = async ( id) => {
+    if (window.confirm("Are you sure wanted to delete this card ?")) {
+      setBook(book => book.filter(item => item._id !== id));
+			await fetch(api_base + '/api/books/' + id, { method: "DELETE" }).then(res => res.json());
+		}
+	}
+
   return (
     <div className='books-container'>
       {book ? book.map((item) =>
-        <BooksCard {...item} />) : "There is no any books"}
+        <BooksCard {...item} id={item._id} deleteBook={deleteBook} />) : "There is no any books"}
 
 <div>
       <p className="item">

@@ -1,12 +1,15 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-function BooksCard({bookName,imageLink, author ,releaseDate}) {
+function BooksCard({id,bookName,imageLink, author ,releaseDate, deleteBook}) {
+
+  console.log(id)
   
   return (
-    <Card style={{ width: '18rem' }}>
-      {imageLink? <Card.Img variant="top" src="holder.js/100px180?text=Image cap" />: null}
+    <Card className= 'card-container'>
+      {imageLink? <Card.Img variant="top" src="holder.js/100px180?text=Image cap" />: <div className='default-img'>Here is no avaliable image</div>}
     
     <Card.Body>
       <Card.Title>{bookName}</Card.Title>
@@ -20,8 +23,7 @@ function BooksCard({bookName,imageLink, author ,releaseDate}) {
       <ListGroup.Item>Year: {releaseDate}</ListGroup.Item>
     </ListGroup>
     <Card.Body>
-      <Card.Link href="#">Card Link</Card.Link>
-      <Card.Link href="#">Another Link</Card.Link>
+    <Button onClick={() => deleteBook(id)} variant="outline-danger">Delete</Button>
     </Card.Body>
   </Card>
   );

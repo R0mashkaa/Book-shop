@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "nodemon app.js"
+  },
   "dependencies": {
     "aws-sdk": "^2.1308.0",
     "bcrypt": "^5.1.0",
@@ -12,6 +15,7 @@
     "nanoid": "3.3.4",
     "nodemailer": "^6.9.1",
     "nodemailer-express-handlebars": "^6.0.0",
+    "nodemon": "^2.0.22",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

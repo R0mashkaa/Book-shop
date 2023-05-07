@@ -1,9 +1,25 @@
 .wrapper{
   width: 80%;
-  
+  padding: 10px;
   gap: 10px;
 }
+.card-container{
+  max-width: 30% !important;
+}
 .books-container{
+  margin: 0 auto;
   display: flex;
- flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.default-img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin: 0 auto;
+  height: 200px;
+  background-color: gray;
 }
