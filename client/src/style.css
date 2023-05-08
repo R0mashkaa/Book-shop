@@ -1,7 +1,24 @@
 .wrapper{
-  width: 80%;
-  padding: 10px;
+  width: 100%;
+ 
   gap: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 auto;
+}
+.Header{
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  height: 120px;
+  background-color: rgb(0, 162, 255);
+}
+.searchForm{
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 20px;
 }
 .card-container{
   max-width: 30% !important;

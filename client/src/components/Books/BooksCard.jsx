@@ -5,7 +5,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 function BooksCard({id,bookName,imageLink, author ,releaseDate, deleteBook}) {
 
-  console.log(id)
+
   
   return (
     <Card className= 'card-container'>
