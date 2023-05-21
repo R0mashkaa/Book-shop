@@ -3,7 +3,14 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-function BooksCard({id,bookName,imageLink, author ,releaseDate, deleteBook}) {
+function BooksCard({id,bookName,description, imageLink, author ,releaseDate, deleteBook}) {
+  const msg = new SpeechSynthesisUtterance()
+
+  const speechHandler = (msg) => {
+    msg.lang ="en-US" 
+    msg.text = description
+    window.speechSynthesis.speak(msg)
+  }
 
 
   
@@ -14,9 +21,9 @@ function BooksCard({id,bookName,imageLink, author ,releaseDate, deleteBook}) {
     <Card.Body>
       <Card.Title>{bookName}</Card.Title>
       <Card.Text>
-        Some quick example text to build on the card title and make up the
-        bulk of the card's content.
+        {description}
       </Card.Text>
+      <button onClick={() => speechHandler(msg)}>SPEAK</button>
     </Card.Body>
     <ListGroup className="list-group-flush">
       <ListGroup.Item>Author: {author}</ListGroup.Item>

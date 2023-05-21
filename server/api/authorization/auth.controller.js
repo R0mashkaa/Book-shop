@@ -2,7 +2,7 @@ const authService = require('./auth.service');
 const userService = require('../user/user.service');
 const { OAuthService, emailService } = require('../../services');
 const { NO_CONTENT } = require('../../errors/error.codes');
-const { BadRequest, Conflict, Unauthorized } = require('../../errors/Apierror');
+// const { BadRequest, Conflict, Unauthorized } = require('../../errors/Apierror');
 const { FRONTEND_URL } = require('../../configs/variables');
 const { FORGOT_PASSWORD, WELCOME } = require('../../configs/emailTypes.enum');
 const { FORGOT_PASSWORD: forgotPasswordAction, CONFIRM_ACCOUNT: сonfirmAccountAction } = require('../../configs/actionTokenTypes.enum');
@@ -12,13 +12,13 @@ module.exports = {
         try {
             const user = req.locals.user;
 
-            if (user.accountStatus === 'Pending') {
-                throw new BadRequest('Account not confirmed.');
-            }
+            // if (user.accountStatus === 'Pending') {
+            //     throw new BadRequest('Account not confirmed.');
+            // }
 
-            if (user.accountStatus === 'Banned') {
-                throw new Unauthorized('Your account banned.');
-            }
+            // if (user.accountStatus === 'Banned') {
+            //     throw new Unauthorized('Your account banned.');
+            // }
 
             await OAuthService.checkPasswords(user.password, req.body.password);
             const tokenPair = OAuthService.generateAccessTokenPair( { ...user } );
@@ -58,9 +58,9 @@ module.exports = {
         try {
             const user = req.locals.user;
 
-            if (user.accountStatus != 'Pending') {
-                throw new Conflict('You account is confirmed');
-            }
+            // if (user.accountStatus != 'Pending') {
+            //     throw new Conflict('You account is confirmed');
+            // }
 
             const confirmAccountToken = OAuthService.generateActionToken(
                 сonfirmAccountAction,

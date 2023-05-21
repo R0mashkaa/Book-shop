@@ -19,6 +19,7 @@ function NewBook({book, setBook,setOpen}) {
           {
             bookName: newBook.bookName,
             author: newBook.author,
+            description: newBook.description,
             releaseDate: newBook.releaseDate
           }
         )
@@ -42,6 +43,15 @@ function NewBook({book, setBook,setOpen}) {
       />
     </p>
     <p className="item">
+      <label for="email"> Description </label>
+      <input
+        type="text"
+        name="bookName"
+        value={newBook.description}
+        onChange={e => setNewBook((old) => ({ ...old, description: e.target.value }))}
+      />
+    </p>
+    <p className="item">
       <label for="password"> Author</label>
       <input
         type="text"
@@ -51,7 +61,7 @@ function NewBook({book, setBook,setOpen}) {
       />
     </p>
     <p className="item">
-      <label for="password"> date</label>
+      <label for="password"> Date</label>
       <input
         type="text"
         name="releaseData"
