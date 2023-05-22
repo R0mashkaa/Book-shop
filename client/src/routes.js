@@ -6,12 +6,11 @@ import { AuthPage } from "./pages/AuthPage";
 import Home from "./pages/Home";
 
 export const useRoutes = (isAuthenticated) => {
-  console.log(isAuthenticated)
+
   if (isAuthenticated) {
     return (
       <Routes>
         <Route path="*" element={<Navigate to="/books"  />} />
-        <Route index element={<About/>} />
         <Route path="/about" exact element={<About />} />
         <Route path="/books"  element={<Books />} />        
       </Routes>

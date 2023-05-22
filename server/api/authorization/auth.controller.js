@@ -1,7 +1,9 @@
 const authService = require('./auth.service');
 const userService = require('../user/user.service');
+const jwt = require('jsonwebtoken');
 const { OAuthService, emailService } = require('../../services');
 const { NO_CONTENT } = require('../../errors/error.codes');
+const { ACCESS_TOKEH_SECRET} = require ('../../configs/variables');
 // const { BadRequest, Conflict, Unauthorized } = require('../../errors/Apierror');
 const { FRONTEND_URL } = require('../../configs/variables');
 const { FORGOT_PASSWORD, WELCOME } = require('../../configs/emailTypes.enum');
@@ -21,13 +23,23 @@ module.exports = {
             // }
 
             await OAuthService.checkPasswords(user.password, req.body.password);
-            const tokenPair = OAuthService.generateAccessTokenPair( { ...user } );
-            await authService.createOauthPair({ ...tokenPair, user: user._id });
-			
-            res.json({
-                ...tokenPair,
-                user
-            });
+
+            const token = jwt.sign(
+                {
+                    userId: user.id,
+                },
+                ACCESS_TOKEH_SECRET,
+                { expiresIn: '2h' }
+            );
+
+            res.json({ token, userId: user.id });
+            // const tokenPair = OAuthService.generateAccessTokenPair( { ...user } );
+            // await authService.createOauthPair({ ...tokenPair, user: user._id });
+
+            // res.json({
+            //     ...tokenPair,
+            //     user: user._id
+            // });
         } catch (e) {
             next(e);
         }
@@ -37,7 +49,7 @@ module.exports = {
         try {
             const accessToken = req.get('Authorization');
             await authService.deleteOneByParams({ accessToken });
-	
+
             res.status(NO_CONTENT).json('Logouted');
         } catch (e) {
             next(e);
@@ -66,7 +78,7 @@ module.exports = {
                 сonfirmAccountAction,
                 { email: user.email }
             );
-            
+
             await authService.createActionToken({
                 actionType: сonfirmAccountAction,
                 tokenData: confirmAccountToken,
@@ -87,8 +99,8 @@ module.exports = {
         try {
             const { _id: userId } = req.user;
             await userService.updateUser(userId, { accountStatus: 'Active' });
-            
-            res.json('Account confirmed'); 
+
+            res.json('Account confirmed');
         } catch (e) {
             next(e);
         }
@@ -101,7 +113,7 @@ module.exports = {
                 forgotPasswordAction,
                 { email: user.email }
             );
-            
+
             await authService.createActionToken({
                 actionType: forgotPasswordAction,
                 tokenData: forgotPasswordToken,
@@ -110,9 +122,9 @@ module.exports = {
 
             const forgotPassURL = `${FRONTEND_URL}/password/forgot?token=${forgotPasswordToken}`;
 
-            await emailService.sendMail(user.email, FORGOT_PASSWORD, { forgotPassURL } );
+            await emailService.sendMail(user.email, FORGOT_PASSWORD, { forgotPassURL });
 
-            res.json('Email sent'); 
+            res.json('Email sent');
         } catch (e) {
             next(e);
         }
@@ -125,8 +137,8 @@ module.exports = {
             const hashPassword = await OAuthService.hashPassword(req.body.password);
             await userService.updateUser(userId, { password: hashPassword });
             await authService.deleteManyByParams({ user: userId });
-            
-            res.json('Password changed. Logouted from all devices'); 
+
+            res.json('Password changed. Logouted from all devices');
         } catch (e) {
             next(e);
         }
@@ -141,9 +153,9 @@ module.exports = {
             const updatedTokenPair = OAuthService.generateAccessTokenPair({ ...user });
 
             await userService.createOauthPair({ ...updatedTokenPair, user: user._id });
-            res.json({ 
+            res.json({
                 ...updatedTokenPair,
-                user 
+                user
             });
         } catch (e) {
             next(e);

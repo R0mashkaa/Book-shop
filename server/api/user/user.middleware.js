@@ -60,6 +60,8 @@ module.exports = {
     emailOrLoginAuthorization:  async (req, res, next) => {
         try {
             const loginData = req.body?.emailOrLogin;
+
+            console.log(loginData);
             let dbField = 'loginName';
 
             if(loginData.includes('@')) {

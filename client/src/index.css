@@ -1,0 +1,19 @@
+@import "~materialize-css/dist/css/materialize.min.css";
+
+input.white-input{
+    border-bottom:1px solid white !important ;
+    color: white !important;
+    margin-top: 10px !important;
+}
+input.white-input+ label{
+    color: white !important;
+}
+
+
+input.white-input:focus+label{
+    border-bottom:1px solid white !important;
+    color: orange !important;
+}
+label.label-form:active{
+    margin-bottom: 10px !important;
+}

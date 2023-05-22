@@ -6,7 +6,6 @@ const NavBar = ({ search, setSearch }) => {
             <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
               
                 <input
-                    id="search"
                     type="text"
                     placeholder="Search Posts"
                     value={search}
