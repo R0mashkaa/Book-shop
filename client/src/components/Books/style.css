@@ -21,12 +21,11 @@
   font-weight: 500;
   font-size: 20px;
 }
-.card-container{
-  max-width: 30% !important;
-}
+
 .books-container{
-  margin: 0 auto;
+  margin: 5px auto;
   display: flex;
+  flex-direction:row ;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;

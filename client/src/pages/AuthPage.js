@@ -16,6 +16,7 @@ export const AuthPage = () => {
 
   useEffect(() => {
     message(error);
+    
     clearError();
   }, [error, message, clearError]);
 
@@ -40,11 +41,13 @@ export const AuthPage = () => {
     } catch (error) {}
   };
 
+  // console.log(message)
+
   const loginHandler = async () => {
     try {
       const data = await request("http://localhost:3001/api/auth/", "POST", { ...login });
       message(data.message);
-      auth.login(data.tokenPair, data.user)
+      auth.login(data.token, data.user)
       setOpenLogin(false)
       console.log(data);
     } catch (error) {}
@@ -54,8 +57,8 @@ export const AuthPage = () => {
     <div className="row">
          <h1>Do you have an account ?</h1>
       <button className="btn orange darken-1" onClick={()=>setOpenLogin(!openLogin)}>LOGIN</button>
-      <div>{openLogin ?  <div className="col s6 offset-s3">
-        {/* <h3>Скороти посиланя</h3> */}
+      <div>{openLogin ?  
+      <div className="col s6 offset-s3">
         <div className="card  blue darken-1">
           <div className="card-content white-text">
             <span className="card-title">Вхід</span>
@@ -63,7 +66,6 @@ export const AuthPage = () => {
               <div className="input-field ">
                 <input
                   placeholder="Введіть email Or Login"
-                  id="email"
                   type="text"
                   name="emailOrLogin"
                   value={login.emailOrLogin}
@@ -124,9 +126,10 @@ export const AuthPage = () => {
                 <label className="label-form" >
                 Age
                 </label>
+                </div>
+                <div className="input-field ">
               <input
                   placeholder="Введіть ім'я"
-                  id="email"
                   type="text"
                   name="fullName"
                   value={form.fullName}
@@ -137,9 +140,10 @@ export const AuthPage = () => {
                 <label className="label-form" htmlFor="first_name">
                 Full name
                 </label>
+                </div>
+                <div className="input-field ">
               <input
                   placeholder="Введіть логін"
-                  id="email"
                   type="text"
                   name="loginName"
                   value={form.loginName}
@@ -150,9 +154,10 @@ export const AuthPage = () => {
                 <label className="label-form" htmlFor="first_name">
                 Login
                 </label>
+                </div>
+                <div className="input-field ">
                 <input
                   placeholder="Введіть email"
-                  id="email"
                   type="text"
                   name="email"
                   value={form.email}
@@ -164,6 +169,7 @@ export const AuthPage = () => {
                 <label className="label-form" htmlFor="email">
                   Email
                 </label>
+                </div>
               </div>
               <div className="input-field ">
                 <input
@@ -174,13 +180,14 @@ export const AuthPage = () => {
                   value={form.password}
                   onChange={changeHandler}
                   className="white-input"
-                  autocomplete="off"
+                  autoComplete='new-password'
                   list="autocompleteOff" 
                 />
                 <label className="label-form" htmlFor="password">
                   Password
                 </label>
               </div>
+              
             </div>
           </div>
           <div className="card-action">
@@ -194,7 +201,7 @@ export const AuthPage = () => {
             </button>
           </div>
         </div>
-      </div>:null}</div>
+      :null}</div>
     </div>
   );
 };

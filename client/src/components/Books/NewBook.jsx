@@ -23,7 +23,7 @@ function NewBook({book, setBook,setOpen}) {
             releaseDate: newBook.releaseDate
           }
         )
-      }).then(res => res.json()).catch((e) => console.log(e))
+      }).then(res => res.json()).catch((e) => alert(e))
 
     setBook([...book, data]);
     setNewBook("");

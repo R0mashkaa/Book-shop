@@ -17,3 +17,11 @@ input.white-input:focus+label{
 label.label-form:active{
     margin-bottom: 10px !important;
 }
+.btn{
+    width: 50%;
+    margin: 0 auto;
+}
+h1{
+    text-align: center;
+    font-size: 30px;
+}

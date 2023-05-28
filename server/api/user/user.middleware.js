@@ -2,7 +2,7 @@ const userService = require('./user.service');
 const User = require('../../dataBase/User');
 const { joiValidatorSchema } = require('./user.validator');
 const { IMAGE_MAX_SIZE,  IMAGE_MIMETYPES } = require('../../configs/file.configs');
-const { NotFound, BadRequest, Conflict } = require('../../errors/Apierror');
+const { NotFound, BadRequest} = require('../../errors/Apierror');
 
 
 
@@ -40,15 +40,21 @@ module.exports = {
 	
     isEmailAndLoginExsist:  async (req, res, next) => {
         try {
-            const loginName = req.body?.loginName;
-            const email = req.body?.email;
+        
 
-            if(await User.findOne({email})){
-                throw new Conflict('This email used, try another one');
+            const {email, loginName} = req.body;
+
+
+            const candidate=await User.findOne({email});
+            if(candidate){
+                // throw new Conflict();
+                return res.status(404).json({ message: 'This email used, try another one'});
             }
 
-            if(await User.findOne({loginName})){
-                throw new Conflict('This login used, try another one');
+            const login=await User.findOne({loginName});
+            if(login){
+                // throw new Conflict('This login used, try another one');
+                return res.status(404).json({ message: 'This login used, try another one'});
             }
 
             next();
