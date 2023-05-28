@@ -40,18 +40,15 @@ module.exports = {
 	
     isEmailAndLoginExsist:  async (req, res, next) => {
         try {
-        
+            const { email, loginName } = req.body;
 
-            const {email, loginName} = req.body;
-
-
-            const candidate=await User.findOne({email});
+            const candidate = await User.findOne({email});
             if(candidate){
                 // throw new Conflict();
                 return res.status(404).json({ message: 'This email used, try another one'});
             }
 
-            const login=await User.findOne({loginName});
+            const login = await User.findOne({loginName});
             if(login){
                 // throw new Conflict('This login used, try another one');
                 return res.status(404).json({ message: 'This login used, try another one'});

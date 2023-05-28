@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { OAuthService, emailService } = require('../../services');
 const { NO_CONTENT } = require('../../errors/error.codes');
 const { ACCESS_TOKEH_SECRET} = require ('../../configs/variables');
-// const { BadRequest, Conflict, Unauthorized } = require('../../errors/Apierror');
+const { BadRequest, Conflict, Unauthorized } = require('../../errors/Apierror');
 const { FRONTEND_URL } = require('../../configs/variables');
 const { FORGOT_PASSWORD, WELCOME } = require('../../configs/emailTypes.enum');
 const { FORGOT_PASSWORD: forgotPasswordAction, CONFIRM_ACCOUNT: сonfirmAccountAction } = require('../../configs/actionTokenTypes.enum');
@@ -13,6 +13,14 @@ module.exports = {
     userLogin: async (req, res, next) => {
         try {
             const user = req.locals.user;
+            
+            if (user.accountStatus === 'Pending') {
+                throw new BadRequest('Account not confirmed.');
+            }
+
+            if (user.accountStatus === 'Banned') {
+                throw new Unauthorized('Your account banned.');
+            }
 
             await OAuthService.checkPasswords(user.password, req.body.password);
 
@@ -21,7 +29,7 @@ module.exports = {
                     userId: user.id,
                 },
                 ACCESS_TOKEH_SECRET,
-                { expiresIn: '2h' }
+                { expiresIn: '24h' }
             );
 
             res.json({ token, userId: user.id });
@@ -52,33 +60,25 @@ module.exports = {
         }
     },
 
-    sendConfirmAccount: async (req, res, next) => {
-        try {
-            const user = req.locals.user;
-
-            // if (user.accountStatus != 'Pending') {
-            //     throw new Conflict('You account is confirmed');
-            // }
-
-            const confirmAccountToken = OAuthService.generateActionToken(
-                сonfirmAccountAction,
-                { email: user.email }
-            );
-
-            await authService.createActionToken({
-                actionType: сonfirmAccountAction,
-                tokenData: confirmAccountToken,
-                user: req.locals.user._id
-            });
-
-            const confirmAccountURL = `${FRONTEND_URL}/api/auth/confirmation/${confirmAccountToken}`;
-
-            await emailService.sendMail(user.email, WELCOME, { confirmAccountURL, name: user.loginName });
-
-            res.json('Email sent');
-        } catch (e) {
-            next(e);
+    sendConfirmAccount: async (user) => {
+        if (user.accountStatus != 'Pending') {
+            throw new Conflict('You account is confirmed');
         }
+
+        const confirmAccountToken = OAuthService.generateActionToken(
+            сonfirmAccountAction,
+            { email: user.email }
+        );
+            
+        authService.createActionToken({
+            actionType: сonfirmAccountAction,
+            tokenData: confirmAccountToken,
+            user: user._id
+        });
+
+        const confirmAccountURL = `${FRONTEND_URL}/account/confirmation?${confirmAccountToken}`;
+
+        await emailService.sendMail(user.email, WELCOME, { confirmAccountURL, name: user.loginName });
     },
 
     setConfirmAccount: async (req, res, next) => {

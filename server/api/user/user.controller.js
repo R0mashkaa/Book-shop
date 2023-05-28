@@ -1,6 +1,7 @@
 const userService = require('./user.service');
 const { CREATED, NO_CONTENT } = require('../../errors/error.codes');
 const { fileService } = require('../../services');
+const { sendConfirmAccount } = require('../authorization/auth.controller');
 
 module.exports = {
     getMyProfile: async (req, res, next) => {
@@ -34,6 +35,7 @@ module.exports = {
     createUser: async (req, res, next) => {
         try {
             const createdUser = await userService.createUser(req.body);
+            sendConfirmAccount(createdUser);
 
             res.status(CREATED).json(createdUser);
         } catch (e) {
