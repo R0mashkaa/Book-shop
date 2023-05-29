@@ -14,10 +14,12 @@ export const useHttp = () => {
             headers["Content-Type"] = "application/json";
           }
           const response = await fetch(url, { method, body, headers });
+          
           const data = await response.json();
+          // console.log(data.message)
           if (!response.ok) {
-            console.log(response)
-            throw new Error(response.message || "Щось піщло не так ");
+            
+            throw new Error(data.message || "Щось піщло не так ");
             
           }
           setLoading(false);

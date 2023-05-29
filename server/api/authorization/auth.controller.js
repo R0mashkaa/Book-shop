@@ -15,14 +15,17 @@ module.exports = {
             const user = req.locals.user;
             
             if (user.accountStatus === 'Pending') {
-                throw new BadRequest('Account not confirmed.');
+                return res.status(404).json({ message: 'Account not confirmed.'});
+                // throw new BadRequest('Account not confirmed.');
             }
 
             if (user.accountStatus === 'Banned') {
-                throw new Unauthorized('Your account banned.');
+                return res.status(404).json({ message: 'Your account banned.'});
+                // throw new Unauthorized();
             }
 
             await OAuthService.checkPasswords(user.password, req.body.password);
+            
 
             const token = jwt.sign(
                 {

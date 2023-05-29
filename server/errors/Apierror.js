@@ -3,6 +3,7 @@ const { BAD_REQUEST, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT, SERVER_ERROR 
 class ApiError extends Error {
     constructor(message, status) {
         super(message);
+        this.message=message;
         this.status = status;
     }
 }

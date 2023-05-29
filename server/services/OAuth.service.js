@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const { BadRequest, Unauthorized, ServerError } = require('../errors/Apierror');
+const { Unauthorized, ServerError, ApiError } = require('../errors/Apierror');
+const {BadRequest}= require('../errors/error.codes');
 const { ACCESS_TOKEH_SECRET, REFRESH_TOKEH_SECRET } = require ('../configs/variables');
 const { FORGOT_PASSWORD, CONFIRM_ACCOUNT } = require('../configs/actionTokenTypes.enum');
 
@@ -11,7 +12,11 @@ const checkPasswords = async (hashedUserPassword, userPassword) => {
     const isPasswordsEquals = await bcrypt.compare(userPassword, hashedUserPassword); 
 
     if(!isPasswordsEquals){
-        throw new BadRequest('Email or password is wrong');
+                
+        // throw new ApiError('Password is wrong');
+        return new Error({ message: 'Password is wrong'});
+
+        // throw new BadRequest('Email or password is wrong');
     }
 };
 

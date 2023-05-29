@@ -13,7 +13,8 @@ module.exports = {
             const user = await userService.findUserByParams({ [dbField]: searchData });
 	
             if (!user) {
-                throw new NotFound('User not found');
+                return res.status(404).json({ message: 'User not found'});
+                // throw new NotFound('User not found');
             }
             
             req.locals = { ...req.locals, user };
@@ -29,7 +30,7 @@ module.exports = {
             const { error } = joiValidatorSchema.validate(req.body);
 	
             if(error){
-                throw new BadRequest(error);
+                return res.status(404).json({ message: error.message});
             }
 
             next();
@@ -40,8 +41,9 @@ module.exports = {
 	
     isEmailAndLoginExsist:  async (req, res, next) => {
         try {
-            const { email, loginName } = req.body;
+            const {  email, loginName } = req.body;
 
+           
             const candidate = await User.findOne({email});
             if(candidate){
                 // throw new Conflict();
@@ -74,7 +76,8 @@ module.exports = {
             const user = await userService.findUserByParams({ [dbField]: loginData });
 
             if (!user) {
-                throw new NotFound('User not found');
+                return res.status(404).json({ message: 'User not found'});
+                // throw new NotFound('User not found');
             }
 
             req.locals = { ...req.locals, user };

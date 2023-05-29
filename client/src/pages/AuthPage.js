@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import "materialize-css";
 import { useHttp } from "../hooks/http.hook";
-import { useMessage } from "../hooks/message.hook";
 import {AuthContext} from '../context/AuthContext'
+import { toast } from "react-toastify";
 
 export const AuthPage = () => {
   const auth = useContext(AuthContext)
@@ -12,17 +12,8 @@ export const AuthPage = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
 
-  const message = useMessage();
 
-  useEffect(() => {
-    message(error);
-    
-    clearError();
-  }, [error, message, clearError]);
-
-  useEffect(() => {
-    window.M.updateTextFields();
-  }, []);
+// console.log(error)
 
   const changeHandler = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,10 +26,14 @@ export const AuthPage = () => {
   const registerHandler = async () => {
     try {
       const data = await request("http://localhost:3001/api/users/", "POST", { ...form });
-      message(data.message);
+      console.log(data)
+      // toast.error(data?.message)
+      setForm(false)
       setOpenSignUp(false)
-      console.log(data);
-    } catch (error) {}
+    } catch (error) {
+      
+      toast.error(error?.message)
+    }
   };
 
   // console.log(message)
@@ -46,11 +41,14 @@ export const AuthPage = () => {
   const loginHandler = async () => {
     try {
       const data = await request("http://localhost:3001/api/auth/", "POST", { ...login });
-      message(data.message);
+      console.log(data.message);
       auth.login(data.token, data.user)
+      setLogin(false)
       setOpenLogin(false)
-      console.log(data);
-    } catch (error) {}
+    } catch (error) {
+      // console.error(error)
+      toast.error(error?.message)
+    }
   };
 
   return (
@@ -163,8 +161,8 @@ export const AuthPage = () => {
                   value={form.email}
                   onChange={changeHandler}
                   className="white-input"
-                  autocomplete="off"
-                  list="autocompleteOff" 
+                  // autocomplete="off"
+                  // list="autocompleteOff" 
                 />
                 <label className="label-form" htmlFor="email">
                   Email
