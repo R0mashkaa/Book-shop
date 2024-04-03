@@ -2,67 +2,64 @@ const User = require('../../dataBase/User');
 const { OAuthService, fileService } = require('../../services');
 
 module.exports = {
-    getAllUsers: async () => {
-        return await User.find();
-    },
-  
-    getSingleUser: async (userId) => {
-        return await User.findById(userId);
-    },
+	getAllUsers: async () => {
+		return await User.find();
+	},
 
-    findUserByParams: (searchObject) => {
-        return User.findOne(searchObject);
-    },
-  
-    createUser: async (userObject) => {
-        const hashPassword = await OAuthService.hashPassword(userObject.password);
-        return User.create({ ...userObject, password: hashPassword });
-    },
+	getSingleUser: async userId => {
+		return await User.findById(userId);
+	},
 
-    updateUser: async (userId, userNewData) => {
-        return User.findByIdAndUpdate(userId, userNewData);
-    },
+	findUserByParams: searchObject => {
+		return User.findOne(searchObject);
+	},
 
-    deleteUserById: async (userId) => {
-        return  User.findByIdAndRemove(userId);
-    },
+	createUser: async userObject => {
+		const hashPassword = await OAuthService.hashPassword(userObject.password);
+		return User.create({ ...userObject, password: hashPassword });
+	},
 
+	updateUser: async (userId, userNewData) => {
+		return User.findByIdAndUpdate(userId, userNewData);
+	},
 
-    getAvatarList: async (userId) => {
-        const data = await User.find(userId).sort({ updatedAt: -1 });
-        return data.map((avatar) => {
-            return {
-                'Link to avatar': avatar.avatarLink,
-                'ID of avatar': avatar.id,
-                'Added at': avatar.createdAt
-            };
-        });
-    },
+	deleteUserById: async userId => {
+		return User.findByIdAndRemove(userId);
+	},
 
-    deleteUserAvatar: async(avatarId) => {
-        const deletedItem = await User.findByIdAndDelete(avatarId);
+	getAvatarList: async userId => {
+		const data = await User.find(userId).sort({ updatedAt: -1 });
+		return data.map(avatar => {
+			return {
+				'Link to avatar': avatar.avatarLink,
+				'ID of avatar': avatar.id,
+				'Added at': avatar.createdAt,
+			};
+		});
+	},
 
-        await fileService.deleteImageFromS3(deletedItem.avatarLink);
-    },
+	deleteUserAvatar: async avatarId => {
+		const deletedItem = await User.findByIdAndDelete(avatarId);
 
-    findAvatarById: async (avatarId) => {
-        const data = await User.find(avatarId);
-        return data.map( (avatar) => avatar.avatarLink );
-    },
+		await fileService.deleteImageFromS3(deletedItem.avatarLink);
+	},
 
-    isActualAvatarEquals: async (avatarId, userId) => {
-        let imageLink = await User.find(avatarId);
-        imageLink = imageLink.map((avatar) => avatar.avatarLink);
-        
-        let actualAvatarLink = await User.find(userId);
-        actualAvatarLink = actualAvatarLink.map((user) => user.actualAvatarLink); 
-  
-        if (imageLink.toString() === actualAvatarLink.toString()) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+	findAvatarById: async avatarId => {
+		const data = await User.find(avatarId);
+		return data.map(avatar => avatar.avatarLink);
+	},
 
+	isActualAvatarEquals: async (avatarId, userId) => {
+		let imageLink = await User.find(avatarId);
+		imageLink = imageLink.map(avatar => avatar.avatarLink);
+
+		let actualAvatarLink = await User.find(userId);
+		actualAvatarLink = actualAvatarLink.map(user => user.actualAvatarLink);
+
+		if (imageLink.toString() === actualAvatarLink.toString()) {
+			return true;
+		} else {
+			return false;
+		}
+	},
 };

@@ -8,11 +8,10 @@ import Home from "./pages/Home";
 import NavBar from "./components/NavBar";
 
 export const useRoutes = (isAuthenticated) => {
-
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
- const [book, setBook] = useState([]);
-  
+  const [book, setBook] = useState([]);
+
   useEffect(() => {
     const filteredResults = book.filter((item) =>
       ((item.bookName).toLowerCase()).includes(search.toLowerCase())
@@ -24,10 +23,9 @@ export const useRoutes = (isAuthenticated) => {
   if (isAuthenticated) {
     return (
       <Routes>
-        <Route path="*" element={<Navigate to="/books"  />} />
+        <Route path="*" element={<Navigate to="/books" />} />
         <Route path="/about" exact element={<About />} />
-        <Route path="/books"  element={<Books book={searchResults} setBook={setBook}  search={search} setSearch={setSearch}  />} />   
-        {/* <Route path="/books"  element={<NavBar  />} />        */}
+        <Route path="/books" element={<Books book={searchResults} setBook={setBook} search={search} setSearch={setSearch} />} />
       </Routes>
     );
   }

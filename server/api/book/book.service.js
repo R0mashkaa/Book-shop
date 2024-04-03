@@ -2,90 +2,86 @@ const Book = require('../../dataBase/Book');
 const { fileService } = require('../../services');
 
 module.exports = {
-    getAllBooks: async () => {
-        return await Book.find();
-    },
-  
-    getSingleBook: async (bookId) => {
-        return await Book.findById(bookId);
-    },
+	getAllBooks: async () => {
+		return await Book.find();
+	},
 
-    getBookByParams : async (req, res) => {
-        try {
-            const keyword = req.params.keyword;
-            const getInfo = await Book.find(
-                {
-                    $or: [
-                        {
-                            bookName: { $regex: keyword },
-                        },
-                        {
-                            author: { $regex: keyword},
-                        },
-                        {
-                            releaseDate: { $regex: keyword }
-                        }
-                    ],
-                }
-            );
-            res.send(getInfo);
-        } catch (e) {
-            console.log(e);
-        }
-    },
+	getSingleBook: async bookId => {
+		return await Book.findById(bookId);
+	},
 
-    createBook: async (userObject) => {
-        return Book.create(userObject);
-    },
+	getBookByParams: async (req, res) => {
+		try {
+			const keyword = req.params.keyword;
+			const getInfo = await Book.find({
+				$or: [
+					{
+						bookName: { $regex: keyword },
+					},
+					{
+						author: { $regex: keyword },
+					},
+					{
+						releaseDate: { $regex: keyword },
+					},
+				],
+			});
+			res.send(getInfo);
+		} catch (e) {
+			console.log(e);
+		}
+	},
 
-    updateBook: async (bookId, bookNewData) => {
-        return Book.findByIdAndUpdate(bookId, bookNewData);
-    },
+	createBook: async userObject => {
+		return Book.create(userObject);
+	},
 
-    deleteBook: async (bookId) => {
-        return  Book.findByIdAndRemove(bookId);
-    },
+	updateBook: async (bookId, bookNewData) => {
+		return Book.findByIdAndUpdate(bookId, bookNewData);
+	},
 
+	deleteBook: async bookId => {
+		return Book.findByIdAndRemove(bookId);
+	},
 
-    getAvatarList: async (bookId) => {                                  // TODO REFACTOR FUNCTIONS BELOW
-        const data = await Book.find(bookId).sort({ updatedAt: -1 });
-        return data.map((avatar) => {
-            return {
-                'Link to avatar': avatar.avatarLink,
-                'ID of avatar': avatar.id,
-                'Added at': avatar.createdAt
-            };
-        });
-    },
-        
-    addBookAvatar: async (linkToAvatar, bookId) => {
-        return Book.create({ avatarLink: linkToAvatar, book: bookId });
-    },
+	getAvatarList: async bookId => {
+		// TODO REFACTOR FUNCTIONS BELOW
+		const data = await Book.find(bookId).sort({ updatedAt: -1 });
+		return data.map(avatar => {
+			return {
+				'Link to avatar': avatar.avatarLink,
+				'ID of avatar': avatar.id,
+				'Added at': avatar.createdAt,
+			};
+		});
+	},
 
-    deleteUserAvatar: async(avatarId) => {
-        const deletedItem = await Book.findByIdAndDelete(avatarId);
+	addBookAvatar: async (linkToAvatar, bookId) => {
+		return Book.create({ avatarLink: linkToAvatar, book: bookId });
+	},
 
-        await fileService.deleteImageFromS3(deletedItem.avatarLink);
-    },
+	deleteUserAvatar: async avatarId => {
+		const deletedItem = await Book.findByIdAndDelete(avatarId);
 
-    findAvatarById: async (avatarId) => {
-        const data = await Book.find(avatarId);
-        return data.map( (avatar) => avatar.avatarLink );
-    },
+		await fileService.deleteImageFromS3(deletedItem.avatarLink);
+	},
 
-    isActualAvatarEquals: async (avatarId, userId) => {
-        let imageLink = await Book.find(avatarId);
-        imageLink = imageLink.map((avatar) => avatar.avatarLink);
-        
-        let actualAvatarLink = await Book.find(userId);
-        actualAvatarLink = actualAvatarLink.map((user) => user.actualAvatarLink); 
-  
-        if (imageLink.toString() === actualAvatarLink.toString()) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+	findAvatarById: async avatarId => {
+		const data = await Book.find(avatarId);
+		return data.map(avatar => avatar.avatarLink);
+	},
 
+	isActualAvatarEquals: async (avatarId, userId) => {
+		let imageLink = await Book.find(avatarId);
+		imageLink = imageLink.map(avatar => avatar.avatarLink);
+
+		let actualAvatarLink = await Book.find(userId);
+		actualAvatarLink = actualAvatarLink.map(user => user.actualAvatarLink);
+
+		if (imageLink.toString() === actualAvatarLink.toString()) {
+			return true;
+		} else {
+			return false;
+		}
+	},
 };

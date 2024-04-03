@@ -1,59 +1,63 @@
 const AWS_S3 = require('aws-sdk/clients/s3');
 const { nanoid } = require('nanoid');
 const path = require('node:path');
-const { S3_REGION, AWS_SECRET_KEY, AWS_ACCESS_KEY, S3_BUCKET } = require('../configs/variables');
+const {
+	S3_REGION,
+	AWS_SECRET_KEY,
+	AWS_ACCESS_KEY,
+	S3_BUCKET,
+} = require('../configs/variables');
 
 const S3 = new AWS_S3({
-    region: S3_REGION,
-    secretAccessKey: AWS_SECRET_KEY,
-    accessKeyId: AWS_ACCESS_KEY,
-    apiVersion: '2006-03-01',
-    signatureVersion: 'v4'
+	region: S3_REGION,
+	secretAccessKey: AWS_SECRET_KEY,
+	accessKeyId: AWS_ACCESS_KEY,
+	apiVersion: '2006-03-01',
+	signatureVersion: 'v4',
 });
 
-
 async function uploadFileToS3(file, itemId, itemType) {
-    const Key = fileNameBuilder(file, itemId, itemType);
+	const Key = fileNameBuilder(file, itemId, itemType);
 
-    await S3
-        .upload({
-            Bucket: S3_BUCKET,
-            Body: file.data,
-            Key,
-            ContentType: file.mimetype
-        })
-        .promise();
+	await S3.upload({
+		Bucket: S3_BUCKET,
+		Body: file.data,
+		Key,
+		ContentType: file.mimetype,
+	}).promise();
 
-    return Key;
+	return Key;
 }
 
 function getFileFromS3(Key) {
-    return S3.getSignedUrl('getObject', { Key, Bucket: S3_BUCKET, Expires: 5 * 60 });
+	return S3.getSignedUrl('getObject', {
+		Key,
+		Bucket: S3_BUCKET,
+		Expires: 5 * 60,
+	});
 }
 function getFileBufferFromS3(Key) {
-    return S3.getObject({ Key, Bucket: S3_BUCKET}).promise();
+	return S3.getObject({ Key, Bucket: S3_BUCKET }).promise();
 }
 // function deleteImageFromS3(Key) {                // TODO IN WORK
 //     return S3.deleteObject({ Key, Bucket: S3_BUCKET }).promise();
 // }
 
-
 function deleteImageFromS3(Key) {
-    Key = Key.slice(47);
-    return S3.deleteObject({ Key, Bucket: S3_BUCKET }).promise();
+	Key = Key.slice(47);
+	return S3.deleteObject({ Key, Bucket: S3_BUCKET }).promise();
 }
 
 function fileNameBuilder(file, itemId, itemType) {
-    const extension = path.extname(file.name);
-    
+	const extension = path.extname(file.name);
 
-    return `${itemType}/${itemId}/${nanoid(8)}${extension}`;
+	return `${itemType}/${itemId}/${nanoid(8)}${extension}`;
 }
 
 module.exports = {
-    uploadFileToS3,
-    getFileFromS3,
-    getFileBufferFromS3,
-    deleteImageFromS3,
-    fileNameBuilder,
+	uploadFileToS3,
+	getFileFromS3,
+	getFileBufferFromS3,
+	deleteImageFromS3,
+	fileNameBuilder,
 };

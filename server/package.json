@@ -1,7 +1,10 @@
 {
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "format": "prettier --write \"./**/*.js\" ",
+    "lint": "eslint \"./**/*.js\" --fix"
   },
+  
   "dependencies": {
     "aws-sdk": "^2.1308.0",
     "bcrypt": "^5.1.0",
@@ -17,9 +20,10 @@
     "nodemailer": "^6.9.1",
     "nodemailer-express-handlebars": "^6.0.0",
     "nodemon": "^2.0.22",
-    "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.31.0"
+    "uuid": "^9.0.0",
+    "openai": "^4.17.4",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1"
   }
 }

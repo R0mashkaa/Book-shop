@@ -1,20 +1,30 @@
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import Chat from './Chat';
 
-const NavBar = ({ search, setSearch }) => {
-    return (
-        <nav className="Nav">
-            <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
-              
-                <input
-                    type="text"
-                    placeholder="Search Posts"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-            </form>
-           
-        </nav>
-    )
+function NavBar({ search, setSearch }) {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  return (
+    <nav className="Nav">
+      <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+        <input
+          type="text"
+          placeholder="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <div className="chat-container">
+          {isChatOpen ? (
+            <Chat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+          ) : (
+            <button className="open-close-chat-button" onClick={() => setIsChatOpen(true)}>
+              Open Chat
+            </button>
+          )}
+        </div>
+      </form>
+    </nav>
+  );
 }
 
-export default NavBar
+export default NavBar;

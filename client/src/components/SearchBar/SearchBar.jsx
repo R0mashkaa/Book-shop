@@ -1,8 +1,9 @@
 import React from 'react';
+import './style.css';
 
 function SearchBar(props) {
   return (
-    <div>
+    <div className="search-bar">
       SearchBar
     </div>
   );

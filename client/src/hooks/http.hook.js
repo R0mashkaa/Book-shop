@@ -19,7 +19,7 @@ export const useHttp = () => {
           // console.log(data.message)
           if (!response.ok) {
             
-            throw new Error(data.message || "Щось піщло не так ");
+            throw new Error(data.message || "Щось пішло не так ");
             
           }
           setLoading(false);

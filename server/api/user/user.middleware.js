@@ -1,112 +1,117 @@
 const userService = require('./user.service');
 const User = require('../../dataBase/User');
 const { joiValidatorSchema } = require('./user.validator');
-const { IMAGE_MAX_SIZE,  IMAGE_MIMETYPES } = require('../../configs/file.configs');
-const { NotFound, BadRequest} = require('../../errors/Apierror');
-
-
+const { IMAGE_MAX_SIZE, IMAGE_MIMETYPES } = require('../../configs/file.configs');
+const { NotFound, BadRequest } = require('../../errors/Apierror');
 
 module.exports = {
-    getUserDynamically: (paramName, from, dbField = paramName) => async (req, res, next) => {
-        try {
-            const searchData = req[from][paramName];
-            const user = await userService.findUserByParams({ [dbField]: searchData });
-	
-            if (!user) {
-                return res.status(404).json({ message: 'User not found'});
-                // throw new NotFound('User not found');
-            }
-            
-            req.locals = { ...req.locals, user };
-	
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
+	getUserDynamically:
+		(paramName, from, dbField = paramName) =>
+		async (req, res, next) => {
+			try {
+				const searchData = req[from][paramName];
+				const user = await userService.findUserByParams({
+					[dbField]: searchData,
+				});
 
-    createValidator: async (req, res, next) => {
-        try {
-            const { error } = joiValidatorSchema.validate(req.body);
-	
-            if(error){
-                return res.status(404).json({ message: error.message});
-            }
+				if (!user) {
+					return res.status(404).json({ message: 'User not found' });
+					// throw new NotFound('User not found');
+				}
 
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
-	
-    isEmailAndLoginExsist:  async (req, res, next) => {
-        try {
-            const {  email, loginName } = req.body;
+				req.locals = { ...req.locals, user };
 
-           
-            const candidate = await User.findOne({email});
-            if(candidate){
-                // throw new Conflict();
-                return res.status(404).json({ message: 'This email used, try another one'});
-            }
+				next();
+			} catch (e) {
+				next(e);
+			}
+		},
 
-            const login = await User.findOne({loginName});
-            if(login){
-                // throw new Conflict('This login used, try another one');
-                return res.status(404).json({ message: 'This login used, try another one'});
-            }
+	createValidator: async (req, res, next) => {
+		try {
+			const { error } = joiValidatorSchema.validate(req.body);
 
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
+			if (error) {
+				return res.status(404).json({ message: error.message });
+			}
 
-    emailOrLoginAuthorization:  async (req, res, next) => {
-        try {
-            const loginData = req.body?.emailOrLogin;
+			next();
+		} catch (e) {
+			next(e);
+		}
+	},
 
-            console.log(loginData);
-            let dbField = 'loginName';
+	isEmailAndLoginExsist: async (req, res, next) => {
+		try {
+			const { email, loginName } = req.body;
 
-            if(loginData.includes('@')) {
-                dbField = 'email';
-            }
+			const candidate = await User.findOne({ email });
+			if (candidate) {
+				// throw new Conflict();
+				return res
+					.status(404)
+					.json({ message: 'This email used, try another one' });
+			}
 
-            const user = await userService.findUserByParams({ [dbField]: loginData });
+			const login = await User.findOne({ loginName });
+			if (login) {
+				// throw new Conflict('This login used, try another one');
+				return res
+					.status(404)
+					.json({ message: 'This login used, try another one' });
+			}
 
-            if (!user) {
-                return res.status(404).json({ message: 'User not found'});
-                // throw new NotFound('User not found');
-            }
+			next();
+		} catch (e) {
+			next(e);
+		}
+	},
 
-            req.locals = { ...req.locals, user };
+	emailOrLoginAuthorization: async (req, res, next) => {
+		try {
+			const loginData = req.body?.emailOrLogin;
 
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
+			console.log(loginData);
+			let dbField = 'loginName';
 
-    checkUserAvatar: (req, res, next) => {
-        try {
-            if (!req.files?.avatar) {
-                throw new BadRequest('No file');
-            }
+			if (loginData.includes('@')) {
+				dbField = 'email';
+			}
 
-            const { name, size, mimetype } = req.files.avatar;
+			const user = await userService.findUserByParams({ [dbField]: loginData });
 
-            if (size > IMAGE_MAX_SIZE) {
-                throw new BadRequest(`File ${name} is too big`);
-            }
+			if (!user) {
+				return res.status(404).json({ message: 'User not found' });
+				// throw new NotFound('User not found');
+			}
 
-            if (!IMAGE_MIMETYPES.includes(mimetype)) {
-                throw new BadRequest('Not valid file type');
-            }
+			req.locals = { ...req.locals, user };
 
-            next();
-        } catch (e) {
-            next(e);
-        }
-    }
+			next();
+		} catch (e) {
+			next(e);
+		}
+	},
+
+	checkUserAvatar: (req, res, next) => {
+		try {
+			if (!req.files?.avatar) {
+				throw new BadRequest('No file');
+			}
+
+			const { name, size, mimetype } = req.files.avatar;
+
+			if (size > IMAGE_MAX_SIZE) {
+				throw new BadRequest(`File ${name} is too big`);
+			}
+
+			if (!IMAGE_MIMETYPES.includes(mimetype)) {
+				throw new BadRequest('Not valid file type');
+			}
+
+			next();
+		} catch (e) {
+			next(e);
+		}
+	},
 };

@@ -1,205 +1,152 @@
-import React, { useContext, useState, useEffect } from "react";
-import "materialize-css";
+import React, { useContext, useState } from "react";
 import { useHttp } from "../hooks/http.hook";
-import {AuthContext} from '../context/AuthContext'
+import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 
 export const AuthPage = () => {
-  const auth = useContext(AuthContext)
+  const auth = useContext(AuthContext);
   const { loading, request, error, clearError } = useHttp();
-  const [form, setForm] = useState([]);
-  const [login, setLogin]=useState({emailOrLogin:"", password:""})
-  const [openLogin, setOpenLogin] = useState(false);
-  const [openSignUp, setOpenSignUp] = useState(false);
-
-
-// console.log(error)
-
-  const changeHandler = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const [login, setLogin] = useState({ emailOrLogin: "", password: "" });
+  const [register, setRegister] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+  });
+  const [isLogin, setIsLogin] = useState(true);
 
   const inputHandler = (e) => {
-    setLogin({ ...login, [e.target.name]: e.target.value });
-  };
-
-  const registerHandler = async () => {
-    try {
-      const data = await request("http://localhost:3001/api/users/", "POST", { ...form });
-      console.log(data)
-      // toast.error(data?.message)
-      setForm(false)
-      setOpenSignUp(false)
-    } catch (error) {
-      
-      toast.error(error?.message)
+    const { name, value } = e.target;
+    if (isLogin) {
+      setLogin({ ...login, [name]: value });
+    } else {
+      setRegister({ ...register, [name]: value });
     }
   };
 
-  // console.log(message)
-
-  const loginHandler = async () => {
+  const submitHandler = async (e) => {
+    e.preventDefault();
     try {
-      const data = await request("http://localhost:3001/api/auth/", "POST", { ...login });
-      console.log(data.message);
-      auth.login(data.token, data.user)
-      setLogin(false)
-      setOpenLogin(false)
+      if (isLogin) {
+        const data = await request(
+          "http://localhost:3001/api/auth/login",
+          "POST",
+          login
+        );
+        auth.login(data.token, data.user);
+      } else {
+        const data = await request(
+          "http://localhost:3001/api/users/",
+          "POST",
+          register
+        );
+        toast.success("Registration successful. Please check your email and confirm your account.");
+      }
     } catch (error) {
-      // console.error(error)
-      toast.error(error?.message)
+      toast.error(error?.message);
     }
+  };
+  
+
+  const switchForm = () => {
+    setIsLogin(!isLogin);
   };
 
   return (
-    <div className="row">
-         <h1>Do you have an account ?</h1>
-      <button className="btn orange darken-1" onClick={()=>setOpenLogin(!openLogin)}>LOGIN</button>
-      <div>{openLogin ?  
-      <div className="col s6 offset-s3">
-        <div className="card  blue darken-1">
-          <div className="card-content white-text">
-            <span className="card-title">Вхід</span>
-            <div>
-              <div className="input-field ">
-                <input
-                  placeholder="Введіть email Or Login"
-                  type="text"
-                  name="emailOrLogin"
-                  value={login.emailOrLogin}
-                  onChange={inputHandler}
-                  className="white-input"
-                />
-                <label className="label-form" htmlFor="first_name">
-                Email or Login
-                </label>
-              </div>
-              <div className="input-field ">
-                <input
-                  placeholder="Введіть пароль"
-                  id="password"
-                  type="password"
-                  name="password"
-                  value={login.password}
-                  onChange={inputHandler}
-                  className="white-input"
-                />
-                <label className="label-form" htmlFor="last_name">
-                  Password
-                </label>
-              </div>
+    <section>
+      <form onSubmit={submitHandler}>
+        <h1>{isLogin ? "Login" : "Register"}</h1>
+        {isLogin ? (
+          <>
+            <div className="inputbox">
+              <ion-icon name="mail-outline"></ion-icon>
+              <input
+                type="text"
+                name="emailOrLogin"
+                value={login.emailOrLogin}
+                onChange={inputHandler}
+                required
+              ></input>
+              <label>Email or login</label>
             </div>
-          </div>
-          <div className="card-action">
-            <button
-              className="btn orange darken-1"
-              disabled={loading}
-              onClick={() => loginHandler()}
-            >
-              Вхід
-            </button>
-          </div>
-        </div>
-      </div> : null}</div>
-
-      
-      <h1>Or you can create it right now</h1>
-      <button className="btn yellow darken-1 " onClick={()=>setOpenSignUp(!openSignUp)}>SIGN UP</button>
-      <div>{openSignUp ? 
-      <div className="col s6 offset-s3">
-        <div className="card  blue darken-1">
-          <div className="card-content white-text">
-            <span className="card-title">Авторизація</span>
-            <div>
-              <div className="input-field ">
+            <div className="inputbox">
+              <ion-icon name="lock-closed-outline"></ion-icon>
               <input
-                  placeholder="Введіть вік"
-                  type="text"
-                  name="age"
-                  value={form.age}
-                  onChange={changeHandler}
-                  className="white-input"
-                  autocomplete="off"
-                />
-                <label className="label-form" >
-                Age
-                </label>
-                </div>
-                <div className="input-field ">
-              <input
-                  placeholder="Введіть ім'я"
-                  type="text"
-                  name="fullName"
-                  value={form.fullName}
-                  onChange={changeHandler}
-                  className="white-input"
-                  autocomplete="off"
-                />
-                <label className="label-form" htmlFor="first_name">
-                Full name
-                </label>
-                </div>
-                <div className="input-field ">
-              <input
-                  placeholder="Введіть логін"
-                  type="text"
-                  name="loginName"
-                  value={form.loginName}
-                  onChange={changeHandler}
-                  className="white-input"
-                  autocomplete="off"
-                />
-                <label className="label-form" htmlFor="first_name">
-                Login
-                </label>
-                </div>
-                <div className="input-field ">
-                <input
-                  placeholder="Введіть email"
-                  type="text"
-                  name="email"
-                  value={form.email}
-                  onChange={changeHandler}
-                  className="white-input"
-                  // autocomplete="off"
-                  // list="autocompleteOff" 
-                />
-                <label className="label-form" htmlFor="email">
-                  Email
-                </label>
-                </div>
-              </div>
-              <div className="input-field ">
-                <input
-                  placeholder="Введіть пароль"
-                  id="password"
-                  type="password"
-                  name="password"
-                  value={form.password}
-                  onChange={changeHandler}
-                  className="white-input"
-                  autoComplete='new-password'
-                  list="autocompleteOff" 
-                />
-                <label className="label-form" htmlFor="password">
-                  Password
-                </label>
-              </div>
-              
+                type="password"
+                id="password"
+                name="password"
+                value={login.password}
+                onChange={inputHandler}
+                required
+              ></input>
+              <label>Password</label>
             </div>
-          </div>
-          <div className="card-action">
-            <button
-              className="btn yellow darken-1 "
-              style={{ marginRight: 10 }}
-              disabled={loading}
-              onClick={() => registerHandler()}
-            >
-              Реєстрація
+          </>
+        ) : (
+          <>
+            <div className="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input
+                type="text"
+                id="registerFullName"
+                name="fullName"
+                value={register.fullName}
+                onChange={inputHandler}
+                required
+              ></input>
+              <label>Name Surname</label>
+              </div>
+              <div className="inputbox">
+              <ion-icon name="mail-outline"></ion-icon>
+              <input
+                type="text"
+                id="loginName"
+                name="loginName"
+                value={register.loginName}
+                onChange={inputHandler}
+                required
+              ></input>
+              <label>Login</label>
+            </div>
+            <div className="inputbox">
+              <ion-icon name="mail-outline"></ion-icon>
+              <input
+                type="text"
+                id="registerEmail"
+                name="email"
+                value={register.email}
+                onChange={inputHandler}
+                required
+              ></input>
+              <label>Email</label>
+            </div>
+            <div className="inputbox">
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              <input
+                type="password"
+                id="registerPassword"
+                name="password"
+                value={register.password}
+                onChange={inputHandler}
+                required
+              ></input>
+              <label>Password</label>
+            </div>
+          </>
+        )}
+        <button type="submit" disabled={loading}>
+          {isLogin ? "Sign In" : "Register"}
+        </button>
+        <div className="register">
+          <p>
+            {isLogin
+              ? "Don't have an account?"
+              : "Already have an account?"}{" "}
+            <button type="button" onClick={switchForm}>
+              {isLogin ? "Register" : "Login"}
             </button>
-          </div>
+          </p>
         </div>
-      :null}</div>
-    </div>
+      </form>
+    </section>
   );
 };
