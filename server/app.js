@@ -12,7 +12,6 @@ const mainRouter = require('./api/api.router');
 const { PORT, MONGO_URL } = require('./configs/variables');
 const { NotFound } = require('./errors/Apierror');
 const { SERVER_ERROR } = require('./errors/error.codes');
-// Added by Dimokat
 const openaiRouter = require('./openaiAPI/message.router');
 
 const app = express();

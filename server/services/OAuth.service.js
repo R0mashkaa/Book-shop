@@ -63,11 +63,11 @@ const validateToken = (tokenType = '', tokenData = '') => {
 				break;
 
 			case 'Forgot password':
-				tokenType = FORGOT_PASSWORD;
+				tokenType = FORGOT_PASSWORD_SECRET;
 				break;
 
 			case 'Confirm account':
-				tokenType = CONFIRM_ACCOUNT;
+				tokenType = CONFIRM_ACCOUNT_SECRET;
 				break;
 
 			default:

@@ -67,9 +67,6 @@ module.exports = {
 		if (user.accountStatus != 'Pending') {
 			throw new Conflict('You account is confirmed');
 		}
-
-		console.log('+++');
-
 		const confirmAccountToken = OAuthService.generateActionToken(
 			confirmAccountAction,
 			{ email: user.email }
@@ -88,6 +85,7 @@ module.exports = {
 			name: user.loginName,
 		});
 	},
+	
 	setConfirmAccount: async (req, res, next) => {
 		try {
 			const actionToken = req.params.actionToken;
